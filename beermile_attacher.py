@@ -11,7 +11,11 @@ import time
 
 
 class beerMile:
-    def __init__(self, event_url):
+    event_url: str
+    login: str
+    password: str
+
+    def __init__(self, event_url: str):
         load_dotenv()
 
         self.event_url = event_url
@@ -20,7 +24,11 @@ class beerMile:
 
     def add_participants(self):
         # authorization
+
+        # the instance of Firefox WebDriver is created
         browser = webdriver.Firefox()
+
+        # go to the page on a given url
         browser.get(self.event_url)
         wait = WebDriverWait(browser, 12)
 
@@ -45,6 +53,7 @@ class beerMile:
         # edit entries
         participants_data = self.extraction_excel()
 
+        # uploading data about participants to the site
         for counter, participant in enumerate(participants_data):
             add_racers_button = wait.until(EC.element_to_be_clickable((By.ID, 'add_entry')))
             span = browser.find_element_by_id(f'container_select_{counter}_msdd')
@@ -72,12 +81,17 @@ class beerMile:
 
     @staticmethod
     def extraction_excel(file_name="Beer_mile.xlsx"):
+        # parsing excel
+
+        # open the table and run the first sheet
         excel_file = xlrd.open_workbook(file_name)
         sheet = excel_file.sheet_by_index(0)
 
-        num_row = sheet.col(0)
+        #
+        num_row: [] = sheet.col(0)
         inf_part = []
 
+        # parse the table and get data from it
         for i in range(2, len(num_row)):
             buf = sheet.row(i)
             buf_str = []
